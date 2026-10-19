@@ -93,7 +93,7 @@ Exact-id recall at 1M is lower by 0.4 to 0.6 points in every row (for example la
 
 ## Data and metrics
 
-- SIFT descriptors, 128-d float32: **[CONFIRM: source (for example the SIFT1M corpus from corpus-texmex.irisa.fr, or the ann-benchmarks HDF5 version) and how the 9K and 99K subsets were taken]**.
+- SIFT descriptors, 128-d float32: SIFT1M dataset from corpus-texmex.irisa.fr (also available in ann-benchmarks HDF5 format). The 99K and 9K benchmarks use the first 99,000 and 9,000 base vectors, evaluated against 1,000 test queries.
 - 1000 queries per size. The ground truth is the exact nearest neighbour computed by brute force over the dataset at each size (at 1M the neighbour lists shipped with the original HDF5 file did not match the vectors, so it was regenerated).
 - File format (raw binary, no header):
   - `dataset.fbin`: n x 128 float32
@@ -102,11 +102,12 @@ Exact-id recall at 1M is lower by 0.4 to 0.6 points in every row (for example la
 - **Recall@1 (exact-id):** fraction of queries where the returned id equals the ground-truth id.
 - **Recall@1 (tie-aware):** also counts a result as correct if its squared distance equals the ground-truth point's squared distance. This is exact for SIFT because all values are integers, so float sums are exact. A "closer than ground truth" counter is also printed and was 0 everywhere, so the ground truth is correct.
 - The 9K set has no duplicate vectors; exact-id is used there, and brute force returns recall 1.0.
-- The data files are not included in this repository (too large). Place them next to each program before running.
+- Raw dataset vectors (`dataset.fbin` and `query.fbin`) are not included due to file size. They can be obtained from the Texmex SIFT1M corpus (`ftp://ftp.irisa.fr/local/texmex/corpus/sift.tar.gz`) or ann-benchmarks (`http://ann-benchmarks.com/sift-128-euclidean.hdf5`) and exported to raw row-major float32 binary format. Place them in their respective size folders (`9k/`, `99k/`, `1m/`).
+- Ground-truth files (`match.ibin` / `match_top1.ibin`) are included directly in the repository so benchmarks can run immediately without recomputing the ground truth. Ground truth was computed via exact brute force over all base vectors (`brute.cpp`).
 
 ## Benchmark methodology
 
-- **Machine:** **[FILL: CPU model, RAM, OS]**. Compiler: **[FILL: g++ version]**, C++17, **no optimization flags** (-O0) for every number reported here.
+- **Machine:** 13th Gen Intel Core i5-13450HX, 24 GB RAM, Windows 11 Home 64-bit. Compiler: g++ 16.2.0 (Rev3, MSYS2), C++17, **no optimization flags** (-O0) for every number reported here.
 - **Timing:** wall clock (`std::chrono::high_resolution_clock`), average ms/query over 1000 queries. Recall is computed after the timer stops.
 - **Slow-state problem:** on the benchmark machine the same binary ran 1.3x to 2x slower in some stretches (one cause was Windows "Balanced" power mode; other slow stretches were unexplained). Brute-force timings are bimodal for the same reason.
 - **Probes:** each sweep is bracketed by a short brute-force probe (20 queries at 99K and 1M with reference 235.1 ms/query at 1M; 100 queries at 9K with reference 2.097 ms/query). A sweep counts only if both probes are within 5% (8% at 9K) of the reference. Brute-force results are reported as the median of the fast cluster, with the full range given.
@@ -124,10 +125,9 @@ Exact-id recall at 1M is lower by 0.4 to 0.6 points in every row (for example la
 ## Repository layout
 
 ```
-9k/    brute.cpp  flat.cpp  hnsw.cpp  compare.cpp
-99k/   brute.cpp  flat.cpp  hnsw.cpp
-1m/    brute.cpp  flat.cpp  hnsw.cpp
-results/   (optional raw benchmark outputs)
+9k/    brute.cpp  flat.cpp  hnsw.cpp  compare.cpp  match.ibin
+99k/   brute.cpp  flat.cpp  hnsw.cpp  match.ibin
+1m/    brute.cpp  flat.cpp  hnsw.cpp  match_top1.ibin
 ```
 
 Each program is a single self-contained file. Each size folder is also where that size's data files go (they are not committed). At 9K, `compare.cpp` builds the flat and layered graphs in one process and interleaves their query sweeps; the 9K layered-vs-flat table comes from it.

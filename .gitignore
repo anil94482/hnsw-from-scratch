@@ -1,5 +1,6 @@
 *.fbin
 *.ibin
+!match*.ibin
 *.bin
 *.bbin
 *.h5
