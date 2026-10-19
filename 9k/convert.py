@@ -7,7 +7,7 @@ dataset = f['dataset'][:].astype(np.float32)   # (9000, 128)
 query   = f['query'][:].astype(np.float32)     # (1000, 128)
 match   = f['match'][:].astype(np.int32)       # (1000, 10)
 
-dataset.tofile('dataset.fbin')   # raw floats, flattened row-major — exactly the 1D layout you want
+dataset.tofile('dataset.fbin')   # raw floats, flattened row-major
 query.tofile('query.fbin')
 match.tofile('match.ibin')
 
