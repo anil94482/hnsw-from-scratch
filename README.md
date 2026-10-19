@@ -97,7 +97,7 @@ Exact-id recall at 1M is lower by 0.4 to 0.6 points in every row (for example la
   - **9K:** `sift10K_byte.h5` from the FLANN repository (https://github.com/flann-lib/flann/blob/master/datasets/sift10K_byte.h5). Contains 10,000 vectors; 1,000 are held out as query vectors, leaving 9,000 base vectors.
   - **99K:** `sift100K_byte.h5` from the FLANN repository (https://github.com/flann-lib/flann/blob/master/datasets/sift100K_byte.h5). Contains 100,000 vectors; 1,000 are held out as query vectors, leaving 99,000 base vectors.
   - **1M:** SIFT1M (https://www.tensorflow.org/datasets/catalog/sift1m).
-  The `.h5` files were converted to raw float32 binary (`dataset.fbin`, `query.fbin`) by a small conversion script. Place the converted files in `9k/`, `99k/`, `1m/`.
+  The `.h5` files were converted to raw float32 binary (`dataset.fbin`, `query.fbin`) by a small conversion script.
 - 1,000 queries evaluated per size. For 1M, `query.fbin` contains all 10,000 SIFT1M queries, but only the first 1,000 are evaluated by the benchmarks.
 - Ground truth origin:
   - **9K and 99K**: Ground-truth nearest neighbours came precomputed and shipped within the respective `.h5` dataset packages.
