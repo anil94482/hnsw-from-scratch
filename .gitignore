@@ -1,0 +1,13 @@
+*.fbin
+*.ibin
+*.bin
+*.bbin
+*.h5
+*.hdf5
+*.exe
+*.o
+*.out
+.venv/
+__pycache__/
+.vscode/
+*.log
