@@ -93,9 +93,11 @@ Exact-id recall at 1M is lower by 0.4 to 0.6 points in every row (for example la
 
 ## Data and metrics
 
-- SIFT descriptors, 128-d float32:
-  - **1M**: Standard SIFT1M corpus (`corpus-texmex.irisa.fr` / ann-benchmarks HDF5 format).
-  - **9K and 99K**: Extracted from separate 10K and 100K SIFT packages (`sift10K_byte.h5` and `sift100K_byte.h5`), where 1,000 vectors are held out as query vectors, leaving 9,000 and 99,000 base vectors, respectively.
+- **Data sources:**
+  - **9K:** `sift10K_byte.h5` from the FLANN repository (https://github.com/flann-lib/flann/blob/master/datasets/sift10K_byte.h5). Contains 10,000 vectors; 1,000 are held out as query vectors, leaving 9,000 base vectors.
+  - **99K:** `sift100K_byte.h5` from the FLANN repository (https://github.com/flann-lib/flann/blob/master/datasets/sift100K_byte.h5). Contains 100,000 vectors; 1,000 are held out as query vectors, leaving 99,000 base vectors.
+  - **1M:** SIFT1M (https://www.tensorflow.org/datasets/catalog/sift1m).
+  The `.h5` files were converted to raw float32 binary (`dataset.fbin`, `query.fbin`) by a small conversion script. Place the converted files in `9k/`, `99k/`, `1m/`.
 - 1,000 queries evaluated per size. For 1M, `query.fbin` contains all 10,000 SIFT1M queries, but only the first 1,000 are evaluated by the benchmarks.
 - Ground truth origin:
   - **9K and 99K**: Ground-truth nearest neighbours came precomputed and shipped within the respective `.h5` dataset packages.
@@ -109,7 +111,7 @@ Exact-id recall at 1M is lower by 0.4 to 0.6 points in every row (for example la
 - **Recall@1 (exact-id):** fraction of queries where the returned id equals the ground-truth id.
 - **Recall@1 (tie-aware):** also counts a result as correct if its squared distance equals the ground-truth point's squared distance. This is exact for SIFT because all values are integers, so float sums are exact. A "closer than ground truth" counter is also printed and was 0 everywhere, so the ground truth is correct.
 - The 9K set has no duplicate vectors; exact-id is used there, and brute force returns recall 1.0.
-- Raw dataset vectors (`dataset.fbin` and `query.fbin`) are not included due to file size. They can be obtained from the Texmex SIFT1M corpus (`ftp://ftp.irisa.fr/local/texmex/corpus/sift.tar.gz`) or ann-benchmarks (`http://ann-benchmarks.com/sift-128-euclidean.hdf5`) and exported to raw row-major float32 binary format. Place them in their respective size folders (`9k/`, `99k/`, `1m/`).
+- Raw dataset vectors (`dataset.fbin` and `query.fbin`) are not included due to file size. Obtain the `.h5` files from the sources above and convert them to raw row-major float32 binary format.
 - Precomputed ground-truth files (`9k/match.ibin`, `99k/match.ibin`, `1m/match_top1.ibin`) are committed directly in the repository so benchmarks can run immediately without having to recompute ground truth.
 
 ## Benchmark methodology
